@@ -2,7 +2,11 @@
 # remote mode against a docling-serve deployment (see ../docling-serve/).
 # Use this when your agent framework needs an MCP endpoint on the network
 # rather than a client-local stdio process.
-FROM registry.access.redhat.com/ubi9/python-311:latest
+#
+# Red Hat OpenShift AI 3.5's own base image — requires `podman login
+# registry.redhat.io` with a valid Red Hat subscription/entitlement to
+# pull.
+FROM registry.redhat.io/rhai/base-image-cpu-rhel9:3.5.0-1786556387
 
 WORKDIR /opt/app-root/src
 

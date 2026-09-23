@@ -41,6 +41,10 @@ pytest tests/src/test_integration_samples.py -v
 
 ## Building and deploying
 
+The Containerfile's base image is on Red Hat's entitled registry — run
+`podman login registry.redhat.io` (requires a Red Hat subscription) before
+building.
+
 ```bash
 make build REGISTRY=quay.io/<your-org> IMAGE_TAG=0.1.0
 make push  REGISTRY=quay.io/<your-org> IMAGE_TAG=0.1.0

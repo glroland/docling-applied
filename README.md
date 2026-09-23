@@ -25,6 +25,42 @@ reference.**
 | [`rag-via-ogx-example/`](rag-via-ogx-example/) ([docs](docs/rag-via-ogx-example.md)) | Docling chunking + OpenShift AI Llama Stack (OGX) | Full RAG: parse, chunk, embed, retrieve, generate |
 | [`mcp-example/`](mcp-example/) ([docs](docs/mcp-example.md)) | `docling-mcp` (Model Context Protocol) | An agent should call Docling itself, not a human/application |
 
+## Setup
+
+These instructions assume you're running on **Linux** (matching what the
+examples themselves deploy to — OpenShift, containers, workbenches).
+macOS/Windows local dev works too, but see the note at the end of this
+section.
+
+```bash
+uv venv --python 3.12 venv
+source venv/bin/activate
+make install
+```
+
+`make install` detects the active venv (`$VIRTUAL_ENV`) and installs into
+it directly — it only creates its own venv under `target/venv` if you
+skip this and just run `make install` on its own. Either way, packages
+are resolved from **`requirements.txt`**, which points at
+**Red Hat's OpenShift AI 3.5 package index**
+(`packages.redhat.com/.../rhoai/3.5/cpu-ubi9/`) as the primary source
+rather than public PyPI. That index carries Red Hat's own patched,
+security-scanned builds of Docling and its dependencies — the same
+packages RHOAI 3.5 ships internally — so what you install locally matches
+what actually runs on the platform, not just an arbitrary upstream
+release. PyPI is listed as a fallback only for packages that index
+doesn't carry for your platform (see `requirements.txt`'s comments).
+
+`--python 3.12` matters: Red Hat's index only publishes wheels for that
+Python version, so creating the venv with a different interpreter can
+leave `uv`/`pip` unable to resolve compiled dependencies. On Linux this
+is usually just a version match; on macOS/Windows, Red Hat's index is
+Linux-wheel-only regardless of Python version, so `uv`/`unsafe-best-match`
+falls back to PyPI for platform-specific packages there — Docling itself
+still comes from Red Hat's index, but you won't get the fully
+Red-Hat-sourced dependency chain outside Linux. See `requirements.txt`
+and the root `Makefile`'s comments for the full mechanics.
+
 ## Suggested path
 
 1. **`simple-examples/`** — run the notebook, understand what

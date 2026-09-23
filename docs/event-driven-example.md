@@ -36,6 +36,9 @@ payload into the CloudEvent shape below.
   `default` Broker in the target namespace
 - An S3-compatible bucket (MinIO, ODF/Noobaa, or AWS S3) for input/output
 - Python 3.11+, `podman`
+- `podman login registry.redhat.io` with a valid Red Hat subscription —
+  the Containerfile's base image (`registry.redhat.io/rhai/base-image-cpu-rhel9`)
+  is on Red Hat's entitled registry
 
 ## Repository layout
 

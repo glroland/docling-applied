@@ -39,7 +39,9 @@ uvx --from docling-mcp docling-mcp-server --transport stdio
 For agent frameworks that need an MCP endpoint over HTTP rather than a
 local process — including Llama Stack, which speaks `sse` — build and
 deploy `docling-mcp` as a service on OpenShift, in remote mode against
-`docling-serve`:
+`docling-serve`. The Containerfile's base image is on Red Hat's entitled
+registry — run `podman login registry.redhat.io` (requires a Red Hat
+subscription) before building.
 
 ```bash
 podman build -f Containerfile -t quay.io/<your-org>/docling-mcp-example:0.1.0 .

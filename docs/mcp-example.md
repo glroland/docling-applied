@@ -33,7 +33,10 @@ with automatic local fallback).
 - Python 3.11+, `pip install docling-mcp` (or `docling-mcp[local]` for
   local mode)
 - For remote mode: a running [Docling Serve](docling-serve.md) deployment
-- For network-reachable (streamable-http) deployment: `podman`, `oc`
+- For network-reachable (streamable-http) deployment: `podman`, `oc`, and
+  `podman login registry.redhat.io` with a valid Red Hat subscription —
+  the Containerfile's base image (`registry.redhat.io/rhai/base-image-cpu-rhel9`)
+  is on Red Hat's entitled registry
 
 ## Repository layout
 

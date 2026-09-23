@@ -39,6 +39,9 @@ async event loop.
 ## Prerequisites
 
 - Python 3.11+, `podman` (or another OCI builder)
+- `podman login registry.redhat.io` with a valid Red Hat subscription —
+  the Containerfile's base image (`registry.redhat.io/rhai/base-image-cpu-rhel9`)
+  is on Red Hat's entitled registry
 - OpenShift Serverless (Knative Serving) installed
 - GPU nodes with the NVIDIA GPU operator, only if `gpu.enabled=true`
   (the Helm chart default)

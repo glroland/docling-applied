@@ -59,7 +59,9 @@ CLUSTER_URL=http://localhost:8080 pytest tests/ -v
 ## Deploying
 
 Requires OpenShift Serverless (Knative Serving + Eventing) with a
-`default` Broker in the target namespace.
+`default` Broker in the target namespace. The Containerfile's base image
+is on Red Hat's entitled registry — run `podman login registry.redhat.io`
+(requires a Red Hat subscription) before building.
 
 ```bash
 make build IMAGE=quay.io/<your-org>/docling-event-driven-example:0.1.0

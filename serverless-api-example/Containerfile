@@ -1,7 +1,11 @@
-# Public UBI Python base — swap for a pre-baked image with Docling's models
-# already cached (see docling-serve's model-cache-job.yaml pattern) if cold
-# start time on first request matters for your deployment.
-FROM registry.access.redhat.com/ubi9/python-311:latest
+# Red Hat OpenShift AI 3.5's own base image — requires `podman login
+# registry.redhat.io` with a valid Red Hat subscription/entitlement to
+# pull. Pairs with the same Red Hat package index requirements.txt
+# already points at, so the Docling version installed here matches what
+# RHOAI 3.5 ships. Swap for a pre-baked image with Docling's models
+# already cached (see docling-serve's model-cache-job.yaml pattern) if
+# cold start time on first request matters for your deployment.
+FROM registry.redhat.io/rhai/base-image-cpu-rhel9:3.5.0-1786556387
 
 ENV OMP_NUM_THREADS=4 \
     HF_HOME=/tmp/ \
