@@ -35,6 +35,7 @@ section.
 ```bash
 uv venv --python 3.12 venv
 source venv/bin/activate
+cp .env.example .env   # optional — fill in your registry/namespace/cluster URLs
 make install
 ```
 
@@ -60,6 +61,21 @@ falls back to PyPI for platform-specific packages there — Docling itself
 still comes from Red Hat's index, but you won't get the fully
 Red-Hat-sourced dependency chain outside Linux. See `requirements.txt`
 and the root `Makefile`'s comments for the full mechanics.
+
+### Environment-specific values (registry, namespace, cluster URLs)
+
+Every `deploy-*` target and several `test-*` targets take values that are
+specific to your cluster — which registry to push images to, which
+namespace to deploy into, which route a live `docling-serve`/Llama Stack
+instance is at. Rather than passing these on every command line, copy
+`.env.example` to `.env` and fill it in; the Makefile loads it
+automatically (`-include .env`, so it's silently skipped if you never
+create one). `.env` is gitignored. Command-line values always win over
+`.env`, which always wins over the Makefile's built-in defaults:
+
+```bash
+make deploy REGISTRY=quay.io/one-off-override   # wins even with a .env present
+```
 
 ## Suggested path
 
@@ -90,6 +106,9 @@ and the root `Makefile`'s comments for the full mechanics.
   across every example for smoke testing; run `make help`. Uses `uv pip`
   automatically when `uv` is on `PATH`. All temp/output files land under
   `target/` (never inside an example's own folder); `make clean` removes it.
+- `.env.example` — template for environment-specific overrides (registry,
+  namespace, cluster URLs); copy to `.env` and fill in — see
+  [Setup](#setup).
 
 ## Provenance
 

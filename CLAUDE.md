@@ -33,6 +33,17 @@ make clean                         # rm -rf target/ (the only place this Makefil
 Live-infrastructure overrides (targets skip cleanly, don't fail, when
 unset/unreachable): `NAMESPACE`, `DOCLING_SERVE_URL`, `LLAMA_STACK_URL`,
 `PIPELINES_ENDPOINT`, e.g. `make test-docling-serve-examples DOCLING_SERVE_URL=https://...`.
+Also `REGISTRY`/`IMAGE_TAG` for image builds. These can go in a `.env`
+file at the repo root (copy `.env.example`) instead of the command line —
+the Makefile does `-include $(ROOT_DIR)/.env` before the `?=` defaults
+that set them, so `.env` overrides the defaults and command-line values
+still override `.env`. `.env` is gitignored; `.env.example` is not — keep
+it in sync when adding a new overridable variable.
+
+Fine-grained test targets: each archetype's `test-<example>` has no
+recipe of its own, it chains `test-<example>-<piece>` targets (e.g.
+`test-simple-examples-structured`) — run one of those directly to skip
+the slow pieces (real OCR) during iteration. `make help` lists them all.
 
 Example names: `simple-examples`, `cli-examples`, `docling-serve`,
 `docling-serve-examples`, `batch-via-pipeline-example`,

@@ -17,6 +17,11 @@
 #     re-run alone instead of the whole archetype. `make test` is slow
 #     because it's the full chain of all of them; run a fine-grained
 #     target directly to iterate faster.
+#   - Environment-specific values (REGISTRY, NAMESPACE, cluster URLs) can
+#     go in an optional .env file at the repo root instead of being
+#     passed on every command line — copy .env.example to .env. It's
+#     gitignored and silently skipped if absent; command-line values
+#     always override it.
 #
 # Usage:
 #   make help
@@ -26,6 +31,7 @@
 #   make deploy            # deploy everything that has a deployable artifact
 #   make clean             # rm -rf target/
 #   make test-docling-serve-examples DOCLING_SERVE_URL=https://...
+#   cp .env.example .env && $EDITOR .env   # then just `make deploy`, no flags needed
 #
 # Run `make help` for the full list of per-example and fine-grained targets.
 
@@ -39,6 +45,15 @@ SHELL := /bin/bash
 ROOT_DIR    := $(abspath $(dir $(lastword $(MAKEFILE_LIST))))
 TARGET_DIR  := $(ROOT_DIR)/target
 SAMPLES_DIR := $(ROOT_DIR)/samples
+
+# Optional environment-specific overrides (registry, namespace, cluster
+# URLs, ...) — copy .env.example to .env and fill it in. Gitignored, so
+# it's safe to put real values (not secrets — this is Make variables, not
+# a secrets store) in there. `-include` means it's silently skipped if
+# absent. Values from .env override the `?=` defaults below but are still
+# overridable on the command line (`make deploy REGISTRY=...` always
+# wins) — see `make help`.
+-include $(ROOT_DIR)/.env
 
 # Route all Python bytecode caches under target/, regardless of which
 # example's scripts are running, so no __pycache__/ ever lands in a
@@ -108,7 +123,7 @@ EXAMPLES := simple-examples cli-examples docling-serve docling-serve-examples \
 # `make help` output. The test-<example> targets above chain these
 # rather than containing their own recipe.
 FINE_TESTS := test-simple-examples-structured test-simple-examples-scanned test-simple-examples-chunking \
-              test-cli-examples-markdown test-cli-examples-ocr test-cli-examples-chunking \
+              test-cli-examples-convert-all test-cli-examples-ocr test-cli-examples-chunking \
               test-docling-serve-examples-sync test-docling-serve-examples-async \
               test-serverless-api-example-health test-serverless-api-example-convert-md \
               test-serverless-api-example-convert-json test-serverless-api-example-integration \
@@ -138,8 +153,13 @@ help:
 	@echo "iteration (fast ones first, slow OCR/chunking ones last):"
 	@echo "  $(FINE_TESTS)"
 	@echo ""
-	@echo "Live-infrastructure overrides (skipped cleanly when unset/unreachable):"
-	@echo "  NAMESPACE=$(NAMESPACE)  DOCLING_SERVE_URL=  LLAMA_STACK_URL=  PIPELINES_ENDPOINT="
+	@echo "Environment-specific overrides (registry, namespace, cluster URLs):"
+	@echo "  REGISTRY=$(REGISTRY)  IMAGE_TAG=$(IMAGE_TAG)  NAMESPACE=$(NAMESPACE)"
+	@echo "  DOCLING_SERVE_URL=$(DOCLING_SERVE_URL)  LLAMA_STACK_URL=$(LLAMA_STACK_URL)  PIPELINES_ENDPOINT=$(PIPELINES_ENDPOINT)"
+	@echo "  Set these via 'make deploy REGISTRY=...' on the command line, or"
+	@echo "  once in a .env file at the repo root (copy .env.example) —"
+	@echo "  command-line values always win over .env. Live-infra ones above"
+	@echo "  are skipped cleanly, not failed, when unset/unreachable."
 	@echo ""
 	@echo "Uses 'uv pip' automatically when uv is on PATH, otherwise plain pip."
 
@@ -221,11 +241,21 @@ build-cli-examples: | $(VENV_PYTHON)
 	@echo "[cli-examples] installing requirements (docling, for the CLI it ships)"
 	$(PIP) -q -r cli-examples/requirements.txt
 
-test-cli-examples: test-cli-examples-markdown test-cli-examples-ocr test-cli-examples-chunking
+test-cli-examples: test-cli-examples-convert-all test-cli-examples-ocr test-cli-examples-chunking
 
-test-cli-examples-markdown: build-cli-examples | $(TARGET_DIR)/cli-examples
-	@echo "[cli-examples] converting structured.pdf to Markdown (fast — no OCR)"
-	PATH="$(VENV_DIR)/bin:$$PATH" bash cli-examples/scripts/convert_to_markdown.sh "$(SAMPLE_STRUCTURED)" "$(TARGET_DIR)/cli-examples"
+# The comprehensive one: every sample PDF, converted to Markdown *and*
+# JSON every time, via convert_multi_format.sh (md+json+text in one
+# `docling` call per file) rather than separate md-only/json-only passes
+# — doing both formats together is faster than parsing the same file
+# twice. -ocr/-chunking below intentionally stay single-file (it's fine
+# for those to cover less ground; this target is the one that always
+# covers every sample).
+test-cli-examples-convert-all: build-cli-examples | $(TARGET_DIR)/cli-examples
+	@echo "[cli-examples] converting every sample to Markdown + JSON (one docling call per file)"
+	for f in "$(SAMPLES_DIR)"/*.pdf; do \
+		echo "  -> $$(basename "$$f")"; \
+		PATH="$(VENV_DIR)/bin:$$PATH" bash cli-examples/scripts/convert_multi_format.sh "$$f" "$(TARGET_DIR)/cli-examples"; \
+	done
 
 test-cli-examples-ocr: build-cli-examples | $(TARGET_DIR)/cli-examples
 	@echo "[cli-examples] converting scanned.pdf with forced OCR (slow)"
