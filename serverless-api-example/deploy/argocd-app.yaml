@@ -1,0 +1,27 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: serverless-api-example
+  labels:
+    app.kubernetes.io/name: serverless-api-example
+    app.kubernetes.io/part-of: serverless-api-example
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  destination:
+    namespace: docling
+    server: https://kubernetes.default.svc
+  source:
+    path: serverless-api-example/deploy/helm
+    repoURL: https://github.com/<your-org>/docling-applied.git
+    targetRevision: HEAD
+    helm:
+      values: ''
+      valueFiles:
+        - values.yaml
+  sources: []
+  project: default
+  syncPolicy:
+    syncOptions:
+      - CreateNamespace=true
+      - ServerSideApply=true

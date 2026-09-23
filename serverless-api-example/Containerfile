@@ -1,0 +1,26 @@
+# Public UBI Python base — swap for a pre-baked image with Docling's models
+# already cached (see docling-serve's model-cache-job.yaml pattern) if cold
+# start time on first request matters for your deployment.
+FROM registry.access.redhat.com/ubi9/python-311:latest
+
+ENV OMP_NUM_THREADS=4 \
+    HF_HOME=/tmp/ \
+    TORCH_HOME=/tmp/ \
+    DEVICE=cpu \
+    LOG_LEVEL=INFO \
+    GRACEFUL_SHUTDOWN_TIMEOUT=30
+
+WORKDIR /opt/app-root/src
+
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+COPY src/ .
+
+ENV PYTHONPATH=/opt/app-root/src
+
+EXPOSE 8080
+
+ENV GRACEFUL_SHUTDOWN_TIMEOUT=45
+
+CMD ["sh", "-c", "exec uvicorn app.main:app --host 0.0.0.0 --port 8080 --timeout-graceful-shutdown ${GRACEFUL_SHUTDOWN_TIMEOUT}"]

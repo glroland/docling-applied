@@ -1,0 +1,19 @@
+apiVersion: serving.knative.dev/v1
+kind: Service
+metadata:
+  name: {{ .Values.kservice.name }}
+spec:
+  template:
+    spec:
+      containers:
+        - image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          ports:
+            - containerPort: {{ .Values.kservice.port }}
+          env:
+            - name: OUTPUT_CHANNEL_URL
+              value: "http://{{ .Values.channel.name }}-kn-channel.{{ .Release.Namespace }}.svc.cluster.local"
+          envFrom:
+            - secretRef:
+                name: docling-s3-storage
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}

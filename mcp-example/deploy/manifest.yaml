@@ -1,0 +1,73 @@
+# Deploys docling-mcp as a streamable-http service on OpenShift, in remote
+# mode against a docling-serve deployment. Set DOCLING_MCP_SERVICE_URL to
+# your docling-serve Route (see ../../docling-serve/) before applying.
+#
+#   oc apply -f manifest.yaml
+#   oc set env deployment/docling-mcp DOCLING_MCP_SERVICE_URL=https://<docling-serve-route>
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: docling-mcp
+  labels:
+    app: docling-mcp
+spec:
+  ports:
+    - name: http
+      port: 8000
+      targetPort: http
+  selector:
+    app: docling-mcp
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: docling-mcp
+  labels:
+    app: docling-mcp
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: docling-mcp
+  template:
+    metadata:
+      labels:
+        app: docling-mcp
+    spec:
+      containers:
+        - name: docling-mcp
+          image: "quay.io/<your-org>/docling-mcp-example:0.1.0"
+          imagePullPolicy: Always
+          ports:
+            - name: http
+              containerPort: 8000
+              protocol: TCP
+          env:
+            - name: DOCLING_MCP_CONVERSION_MODE
+              value: "remote"
+            - name: DOCLING_MCP_SERVICE_URL
+              value: "https://CHANGE-ME.apps.example.com"
+          resources:
+            requests:
+              cpu: "250m"
+              memory: 512Mi
+            limits:
+              cpu: "1"
+              memory: 1Gi
+---
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  name: docling-mcp
+  labels:
+    app: docling-mcp
+spec:
+  to:
+    kind: Service
+    name: docling-mcp
+  port:
+    targetPort: http
+  tls:
+    termination: edge
+    insecureEdgeTerminationPolicy: Redirect

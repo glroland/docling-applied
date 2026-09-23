@@ -1,0 +1,15 @@
+# Runs docling-mcp as a network-reachable streamable-http MCP server, in
+# remote mode against a docling-serve deployment (see ../docling-serve/).
+# Use this when your agent framework needs an MCP endpoint on the network
+# rather than a client-local stdio process.
+FROM registry.access.redhat.com/ubi9/python-311:latest
+
+WORKDIR /opt/app-root/src
+
+RUN pip install --no-cache-dir docling-mcp
+
+ENV DOCLING_MCP_CONVERSION_MODE=remote
+
+EXPOSE 8000
+
+CMD ["docling-mcp-server", "--transport", "streamable-http", "--host", "0.0.0.0", "--port", "8000", "conversion"]

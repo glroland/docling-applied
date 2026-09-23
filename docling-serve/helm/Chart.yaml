@@ -1,0 +1,12 @@
+apiVersion: v2
+name: docling-serve
+description: Deploys the upstream docling-serve document conversion API on OpenShift.
+type: application
+version: 0.1.0
+appVersion: "1.0"
+keywords:
+  - docling
+  - document-conversion
+  - ocr
+  - openshift
+home: https://github.com/docling-project/docling-serve

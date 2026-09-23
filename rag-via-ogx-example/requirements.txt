@@ -1,0 +1,5 @@
+# Docling version/extras/index are all controlled centrally — see
+# ../requirements.txt.
+-r ../requirements.txt
+
+llama-stack-client>=0.2

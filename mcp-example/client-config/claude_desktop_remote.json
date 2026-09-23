@@ -1,0 +1,13 @@
+{
+  "mcpServers": {
+    "docling": {
+      "command": "uvx",
+      "args": ["--from=docling-mcp", "docling-mcp-server", "--transport", "stdio"],
+      "env": {
+        "DOCLING_MCP_CONVERSION_MODE": "remote",
+        "DOCLING_MCP_SERVICE_URL": "https://<your-docling-serve-route>",
+        "DOCLING_MCP_SERVICE_API_KEY": ""
+      }
+    }
+  }
+}

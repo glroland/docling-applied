@@ -1,0 +1,6 @@
+# docling-mcp pulls in docling itself as a dependency; route that through
+# the central pin (../requirements.txt) so its version matches every
+# other example in this repo.
+-r ../requirements.txt
+
+docling-mcp

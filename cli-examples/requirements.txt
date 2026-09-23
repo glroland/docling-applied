@@ -1,0 +1,4 @@
+# The `docling` command-line tool ships as part of the docling package
+# itself — no separate install. Docling version/extras/index are
+# controlled centrally — see ../requirements.txt.
+-r ../requirements.txt

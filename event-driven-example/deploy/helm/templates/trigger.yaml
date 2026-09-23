@@ -1,0 +1,14 @@
+apiVersion: eventing.knative.dev/v1
+kind: Trigger
+metadata:
+  name: {{ .Values.trigger.name }}
+spec:
+  broker: {{ .Values.trigger.broker }}
+  filter:
+    attributes:
+      type: com.docling.document.ingest
+  subscriber:
+    ref:
+      apiVersion: serving.knative.dev/v1
+      kind: Service
+      name: {{ .Values.kservice.name }}

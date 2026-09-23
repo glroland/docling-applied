@@ -1,0 +1,33 @@
+image:
+  repository: quay.io/<your-org>/docling-event-driven-example
+  tag: "0.1.0"
+
+kservice:
+  name: docling-process
+  port: 8080
+
+channel:
+  name: docling-process-output
+  route:
+    tlsTermination: edge
+
+trigger:
+  name: docling-process-trigger
+  broker: default
+
+# S3-compatible storage credentials for the input/output buckets referenced
+# in the CloudEvent payload (see README for the payload shape). Matches the
+# AWS_* env var convention OpenShift AI Data Connections use.
+s3:
+  endpoint: ""
+  region: "us-east-1"
+  accessKeyId: ""
+  secretAccessKey: ""
+
+resources:
+  requests:
+    cpu: "1"
+    memory: 2Gi
+  limits:
+    cpu: "4"
+    memory: 6Gi

@@ -1,0 +1,101 @@
+# ---------------------------------------------------------------------------
+# Image
+# ---------------------------------------------------------------------------
+# CPU image by default so this deploys on any cluster. Flip gpu.enabled to
+# switch to a CUDA image — see the comment on gpu.enabled below for tag
+# guidance, since CUDA images are not published under a `latest` tag.
+image:
+  repository: ghcr.io/docling-project/docling-serve-cpu
+  tag: "latest"
+  pullPolicy: Always
+
+replicaCount: 1
+
+# ---------------------------------------------------------------------------
+# Application configuration (rendered into a ConfigMap)
+# https://github.com/docling-project/docling-serve — DOCLING_SERVE_* env vars
+# ---------------------------------------------------------------------------
+config:
+  enableUi: "true"
+  # Optional: cache converted-model artifacts on a PVC instead of
+  # re-downloading them on every pod restart. Leave blank to disable.
+  artifactsPath: ""
+
+# ---------------------------------------------------------------------------
+# GPU support
+# When gpu.enabled=true:
+#   - image.repository/tag are overridden to a CUDA build (image.cuda below)
+#   - the Deployment requests nvidia.com/gpu and adds the GPU node selector
+# CUDA images do not publish a `latest` tag — pin an explicit released
+# version. Check https://github.com/docling-project/docling-serve/pkgs/container/docling-serve-cu128
+# (or -cu130) for the current tags before deploying.
+# ---------------------------------------------------------------------------
+gpu:
+  enabled: false
+  image:
+    repository: ghcr.io/docling-project/docling-serve-cu128
+    tag: "v1.8.0" # verify against the current release before deploying
+  resourceName: nvidia.com/gpu
+  count: 1
+  nodeSelector:
+    nvidia.com/gpu.present: "true"
+
+# ---------------------------------------------------------------------------
+# Resource requests / limits (CPU profile; GPU profile overrides at deploy
+# time via --set resources.requests.cpu=... etc. if the defaults don't fit)
+# ---------------------------------------------------------------------------
+resources:
+  requests:
+    cpu: "1"
+    memory: 2Gi
+  limits:
+    cpu: "4"
+    memory: 6Gi
+
+# ---------------------------------------------------------------------------
+# Probes — /livez and /readyz are docling-serve's dedicated k8s probe routes
+# ---------------------------------------------------------------------------
+livenessProbe:
+  httpGet:
+    path: /livez
+    port: http
+  initialDelaySeconds: 30
+  periodSeconds: 15
+  failureThreshold: 3
+
+readinessProbe:
+  httpGet:
+    path: /readyz
+    port: http
+  initialDelaySeconds: 20
+  periodSeconds: 10
+  failureThreshold: 3
+
+# ---------------------------------------------------------------------------
+# Service / Route
+# ---------------------------------------------------------------------------
+service:
+  type: ClusterIP
+  port: 5001
+
+route:
+  enabled: true
+  timeoutSeconds: 300
+  tls:
+    termination: edge
+    insecureEdgeTerminationPolicy: Redirect
+
+# ---------------------------------------------------------------------------
+# ServiceAccount
+# ---------------------------------------------------------------------------
+serviceAccount:
+  create: true
+  name: ""
+  annotations: {}
+
+podAnnotations: {}
+podSecurityContext: {}
+containerSecurityContext: {}
+nodeSelector: {}
+tolerations: []
+affinity: {}

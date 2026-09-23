@@ -1,0 +1,27 @@
+# Central Docling version pin, shared by every example in this repo that
+# depends on Docling directly. Each example's own requirements.txt pulls
+# this in via `-r ../requirements.txt` instead of pinning its own
+# version, so there is exactly one place that decides which Docling
+# release is in use across the whole repo.
+#
+# docling itself is sourced from Red Hat's OpenShift AI 3.5 package index
+# so the version matches what RHOAI 3.5 ships. This is the CPU/UBI9
+# variant; for a GPU-targeted build, swap cpu-ubi9 for the matching CUDA
+# variant (e.g. cuda-ubi9) in the URL below.
+#
+# That index only publishes Linux wheels (it's built for the UBI9
+# container image, not local dev). PyPI is listed as a fallback so
+# platform-specific compiled deps (pydantic-core, torch, etc.) still
+# resolve on macOS/Windows dev machines — on those, docling itself still
+# comes from Red Hat's index, but its transitive deps won't all be the
+# exact same builds RHOAI 3.5 ships. A Linux build (this repo's
+# Containerfiles, or CI) gets the full Red Hat-sourced dependency chain.
+#
+# The --index-strategy flag below is uv-only; the root Makefile applies
+# it when installing with uv and omits it for plain pip (which doesn't
+# have uv's stricter "first index wins" default, so it doesn't need it —
+# but also doesn't understand the flag, so it can't appear in this file).
+--index-url https://packages.redhat.com/api/pypi/public-rhai/rhoai/3.5/cpu-ubi9/simple/
+--extra-index-url https://pypi.org/simple/
+
+docling[rapidocr]==2.113.0

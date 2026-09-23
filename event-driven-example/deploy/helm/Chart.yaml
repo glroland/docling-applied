@@ -1,0 +1,6 @@
+apiVersion: v2
+name: docling-eventing
+description: Knative Eventing pipeline that converts documents on upload (S3-triggered).
+type: application
+version: 0.1.0
+appVersion: "0.1.0"
