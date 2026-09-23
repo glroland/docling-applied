@@ -4,7 +4,10 @@
 #   - All temp/output files land under target/ (this Makefile creates
 #     target/<example-name>/ per example). Nothing is ever written inside
 #     an example's own subfolder.
-#   - `make clean` removes target/ and nothing else.
+#   - `make clean` removes target/ and nothing else. The shared venv
+#     lives at ./venv, a fixed path outside target/, precisely so `make
+#     clean` doesn't take it out — reinstalling it means redownloading
+#     Docling/torch. `make clean-venv` removes it explicitly.
 #   - Test data always comes from samples/ at the repo root.
 #   - Steps that need a live cluster or external service (deploy targets,
 #     and a few test targets) check for the required tool/endpoint first
@@ -29,7 +32,8 @@
 #   make test             # smoke-test everything (uses samples/, writes to target/) — slow
 #   make test-simple-examples-structured   # one fast piece of one archetype — fast
 #   make deploy            # deploy everything that has a deployable artifact
-#   make clean             # rm -rf target/
+#   make clean             # rm -rf target/ (leaves ./venv alone)
+#   make clean-venv        # rm -rf ./venv (only if you actually want to reinstall)
 #   make test-docling-serve-examples DOCLING_SERVE_URL=https://...
 #   cp .env.example .env && $EDITOR .env   # then just `make deploy`, no flags needed
 #
@@ -64,22 +68,28 @@ PODMAN ?= podman
 HELM   ?= helm
 OC     ?= oc
 
-# If you've already activated a venv yourself (e.g. `uv venv --python
-# 3.12 venv && source venv/bin/activate`), $VIRTUAL_ENV is inherited from
-# the environment and that venv is used as-is — nothing here re-creates
-# or overrides it. Otherwise every example installs into one shared
-# virtual environment under target/ (so `make clean` removes it, and
-# nothing lands in a subfolder). Either way it should be pinned to the
-# Python version Red Hat's RHOAI 3.5 package index publishes wheels for
-# (see requirements.txt) — using a different Python is how you'd end up
-# needing pip/uv to fall back off that index for docling itself, not
-# just its platform-specific deps.
+# Every example installs into one shared virtual environment at a fixed
+# path: ./venv at the repo root — always the same path regardless of
+# which shell invokes `make` or whether a venv happens to be active in
+# it (an earlier version of this Makefile deferred to $VIRTUAL_ENV when
+# set, which made the effective venv location depend on shell state —
+# confusing, and it meant `make clean` could take out whichever venv
+# target-less shells fell back to). `uv venv --python 3.12 venv` (see
+# README Setup) creates the exact same path `make install` would anyway,
+# so doing it yourself first vs. letting `make install` do it are
+# equivalent, not different modes.
+#
+# Deliberately NOT under target/: rebuilding this venv means
+# reinstalling Docling/torch from scratch, so `make clean` (which people
+# run often, just to clear conversion output) must never touch it. Use
+# `make clean-venv` to remove it explicitly.
+#
+# It should be pinned to the Python version Red Hat's RHOAI 3.5 package
+# index publishes wheels for (see requirements.txt) — using a different
+# Python is how you'd end up needing pip/uv to fall back off that index
+# for docling itself, not just its platform-specific deps.
 DOCLING_PYTHON_VERSION ?= 3.12
-ifdef VIRTUAL_ENV
-VENV_DIR    := $(VIRTUAL_ENV)
-else
-VENV_DIR    := $(TARGET_DIR)/venv
-endif
+VENV_DIR    := $(ROOT_DIR)/venv
 VENV_PYTHON := $(VENV_DIR)/bin/python3
 
 UV := $(shell command -v uv 2>/dev/null)
@@ -130,7 +140,7 @@ FINE_TESTS := test-simple-examples-structured test-simple-examples-scanned test-
               test-event-driven-example-ingest test-event-driven-example-invalid-payload \
               test-rag-via-ogx-example-ingest test-rag-via-ogx-example-query
 
-.PHONY: help clean install build test deploy \
+.PHONY: help clean clean-venv install build test deploy \
         $(addprefix build-,$(EXAMPLES)) \
         $(addprefix test-,$(EXAMPLES)) \
         $(addprefix deploy-,$(EXAMPLES)) \
@@ -143,7 +153,8 @@ help:
 	@echo "  make build     Prepare/compile every example that has a build step"
 	@echo "  make test      Run every example's smoke test (writes to target/)"
 	@echo "  make deploy    Deploy every example that has a deployable artifact"
-	@echo "  make clean     Remove target/ (the only place this Makefile writes)"
+	@echo "  make clean     Remove target/ (conversion output/caches — leaves ./venv alone)"
+	@echo "  make clean-venv  Remove ./venv (only if you actually want to reinstall)"
 	@echo ""
 	@echo "Per-example targets: build-<name> / test-<name> / deploy-<name>, for:"
 	@echo "  $(EXAMPLES)"
@@ -167,10 +178,14 @@ clean:
 	rm -rf "$(TARGET_DIR)"
 	@echo "Removed $(TARGET_DIR)"
 
-# Creates the shared venv under target/ that every install/run target
-# below depends on. Idempotent — skips creation if it already exists.
+clean-venv:
+	rm -rf "$(VENV_DIR)"
+	@echo "Removed $(VENV_DIR)"
+
+# Creates the shared venv at the fixed ./venv path that every install/run
+# target below depends on. Idempotent — skips creation if it already
+# exists (whether make created it last time or you did yourself).
 $(VENV_PYTHON):
-	@mkdir -p "$(TARGET_DIR)"
 	if [ -n "$(UV)" ]; then \
 		echo "[venv] uv venv --python $(DOCLING_PYTHON_VERSION) $(VENV_DIR)"; \
 		uv venv --python "$(DOCLING_PYTHON_VERSION)" "$(VENV_DIR)"; \

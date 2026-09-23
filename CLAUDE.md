@@ -89,24 +89,35 @@ doesn't understand that flag and doesn't need it).
 
 ### The shared venv and Python pinning
 
-`make install`/`build-*` create one shared venv at `target/venv`, pinned
-to Python 3.12 (`DOCLING_PYTHON_VERSION` in the Makefile) — matching the
-ABI Red Hat's index publishes wheels for. When `uv` is on `PATH` it
-auto-provisions that interpreter (`uv venv --python 3.12`); without uv,
-`python3 -m venv` is used with a warning if the system interpreter isn't
-3.12. `PIP`/`PYTHON` Make variables always point into this venv — never
-call bare `pip`/`python3` in a Makefile recipe.
+`make install`/`build-*` create one shared venv at a **fixed path,
+`./venv` at the repo root** — deliberately not under `target/`, and not
+conditional on shell state (an earlier version deferred to `$VIRTUAL_ENV`
+when set; that made the effective venv path depend on which shell
+invoked `make`, which was confusing and meant `make clean` could
+silently take out whichever venv a target-less shell had fallen back to
+— don't reintroduce that). It's pinned to Python 3.12
+(`DOCLING_PYTHON_VERSION` in the Makefile) — matching the ABI Red Hat's
+index publishes wheels for. When `uv` is on `PATH` it auto-provisions
+that interpreter (`uv venv --python 3.12`); without uv, `python3 -m venv`
+is used with a warning if the system interpreter isn't 3.12. `PIP`/`PYTHON`
+Make variables always point into this venv — never call bare
+`pip`/`python3` in a Makefile recipe. `make clean` never removes `./venv`
+(reinstalling it means redownloading Docling/torch) — `make clean-venv`
+does that explicitly.
 
 ### The "everything under target/" convention
 
-No example script or Makefile recipe writes output, caches, or venvs
-inside an example's own folder — everything goes under `target/<example-name>/`
-at the repo root (`make clean` removes it in one shot). This is enforced
+No example script or Makefile recipe writes output or caches inside an
+example's own folder — everything goes under `target/<example-name>/` at
+the repo root (`make clean` removes it in one shot). This is enforced
 throughout: scripts take an explicit output-directory argument rather
 than defaulting to a local `output/` inside the repo, `PYTHONPYCACHEPREFIX`
 is exported globally in the Makefile to redirect bytecode caches, and
 pytest invocations pass `-o cache_dir=target/<example>/.pytest_cache`.
-Preserve this when adding new scripts or Makefile targets.
+Preserve this when adding new scripts or Makefile targets. The one
+deliberate exception is `./venv` (see above) — it's a repo-root sibling
+of `target/`, not inside it, specifically so `make clean` doesn't remove
+it.
 
 ### `samples/`
 

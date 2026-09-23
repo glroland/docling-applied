@@ -39,10 +39,13 @@ cp .env.example .env   # optional — fill in your registry/namespace/cluster UR
 make install
 ```
 
-`make install` detects the active venv (`$VIRTUAL_ENV`) and installs into
-it directly — it only creates its own venv under `target/venv` if you
-skip this and just run `make install` on its own. Either way, packages
-are resolved from **`requirements.txt`**, which points at
+The venv always lives at `./venv` — a fixed path, not conditional on
+shell state — whether you create it yourself first (as above) or skip
+straight to `make install`, which creates it at that same path if it
+doesn't exist yet. `make clean` never removes it (that would mean
+redownloading Docling/torch on the next run); use `make clean-venv` if
+you actually want to reinstall it. Either way, packages are resolved
+from **`requirements.txt`**, which points at
 **Red Hat's OpenShift AI 3.5 package index**
 (`packages.redhat.com/.../rhoai/3.5/cpu-ubi9/`) as the primary source
 rather than public PyPI. That index carries Red Hat's own patched,
