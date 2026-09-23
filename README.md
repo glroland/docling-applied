@@ -9,16 +9,21 @@ Each example is a self-contained, incrementally more involved way to
 consume Docling. Start at the top and go as deep as the problem you're
 solving actually needs.
 
+**Full documentation for every approach — overview, architecture,
+prerequisites, configuration reference, and when (not) to use it — lives
+in [`docs/`](docs/). This README is the fast path; `docs/` is the
+reference.**
+
 | Example | Pattern | When to reach for it |
 |---|---|---|
-| [`simple-examples/`](simple-examples/) | Docling SDK, called directly | Learning what Docling does; a notebook/workbench workflow with no service |
-| [`cli-examples/`](cli-examples/) | The `docling` command-line tool | One-off conversions or shell-pipeline use, no Python |
-| [`docling-serve/`](docling-serve/) + [`docling-serve-examples/`](docling-serve-examples/) | Deploy the upstream `docling-serve` REST API | The default choice for "I need a Docling API on my cluster" — no custom code |
-| [`batch-via-pipeline-example/`](batch-via-pipeline-example/) | Data Science Pipeline (KFP) | Converting a whole bucket of documents at once; scheduled/repeatable ingestion |
-| [`serverless-api-example/`](serverless-api-example/) | Custom FastAPI service on Knative Serverless | You need business logic docling-serve doesn't provide (custom auth, response shaping, embedding Docling in a larger API) |
-| [`event-driven-example/`](event-driven-example/) | Knative Eventing, CloudEvents | Conversion should react to an upload landing in object storage, not a client request |
-| [`rag-via-ogx-example/`](rag-via-ogx-example/) | Docling chunking + OpenShift AI Llama Stack (OGX) | Full RAG: parse, chunk, embed, retrieve, generate |
-| [`mcp-example/`](mcp-example/) | `docling-mcp` (Model Context Protocol) | An agent should call Docling itself, not a human/application |
+| [`simple-examples/`](simple-examples/) ([docs](docs/simple-examples.md)) | Docling SDK, called directly | Learning what Docling does; a notebook/workbench workflow with no service |
+| [`cli-examples/`](cli-examples/) ([docs](docs/cli-examples.md)) | The `docling` command-line tool | One-off conversions or shell-pipeline use, no Python |
+| [`docling-serve/`](docling-serve/) + [`docling-serve-examples/`](docling-serve-examples/) ([docs](docs/docling-serve.md)) | Deploy the upstream `docling-serve` REST API | The default choice for "I need a Docling API on my cluster" — no custom code |
+| [`batch-via-pipeline-example/`](batch-via-pipeline-example/) ([docs](docs/batch-via-pipeline-example.md)) | Data Science Pipeline (KFP) | Converting a whole bucket of documents at once; scheduled/repeatable ingestion |
+| [`serverless-api-example/`](serverless-api-example/) ([docs](docs/serverless-api-example.md)) | Custom FastAPI service on Knative Serverless | You need business logic docling-serve doesn't provide (custom auth, response shaping, embedding Docling in a larger API) |
+| [`event-driven-example/`](event-driven-example/) ([docs](docs/event-driven-example.md)) | Knative Eventing, CloudEvents | Conversion should react to an upload landing in object storage, not a client request |
+| [`rag-via-ogx-example/`](rag-via-ogx-example/) ([docs](docs/rag-via-ogx-example.md)) | Docling chunking + OpenShift AI Llama Stack (OGX) | Full RAG: parse, chunk, embed, retrieve, generate |
+| [`mcp-example/`](mcp-example/) ([docs](docs/mcp-example.md)) | `docling-mcp` (Model Context Protocol) | An agent should call Docling itself, not a human/application |
 
 ## Suggested path
 
@@ -33,6 +38,8 @@ solving actually needs.
 
 ## Shared assets
 
+- `docs/` — full documentation for every approach; start at
+  [`docs/README.md`](docs/README.md).
 - `samples/` — three representative PDFs used across the examples:
   `structured.pdf` (born-digital, clean layout), `scanned.pdf`
   (image-only, exercises OCR), and `hybrid.pdf` (mixed).
