@@ -1,0 +1,23 @@
+# Custom docling-serve image built on Red Hat OpenShift AI 3.5's own base
+# image, with rapidocr baked in. Requires `podman login registry.redhat.io`
+# with a valid Red Hat subscription/entitlement to pull the base image.
+#
+# Build:
+#   podman login registry.redhat.io
+#   podman build -f Containerfile -t <registry>/docling-serve:<tag> .
+#
+# Point the Helm chart or plain manifest at the result:
+#   helm install docling-serve ./helm -n docling \
+#     --set image.repository=<registry>/docling-serve --set image.tag=<tag>
+FROM registry.redhat.io/rhai/base-image-cpu-rhel9:3.5.0-1786556387
+
+WORKDIR /opt/app-root/src
+
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+ENV DOCLING_SERVE_ENABLE_UI=true
+
+EXPOSE 5001
+
+CMD ["docling-serve", "run"]

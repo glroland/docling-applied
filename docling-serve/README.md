@@ -15,6 +15,9 @@ For client examples that call this API (curl, Python, sync and async), see
   [docling-serve's own reference manifest](https://github.com/docling-project/docling-serve/blob/main/docs/deploy-examples/docling-serve-simple.yaml).
 - `helm/` — a Helm chart for anything beyond a quick demo: configurable
   replicas, resources, GPU toggle, and Route/TLS settings.
+- `Containerfile` + `requirements.txt` — build your own image instead of
+  using the public one, on Red Hat's own base image. See
+  [Building your own image](#building-your-own-image) below.
 
 ## Quickstart (plain manifest)
 
@@ -52,6 +55,38 @@ helm install docling-serve ./helm -n docling \
 
 See `helm/values.yaml` for the full set of options (resources, route
 timeout, TLS termination, node selectors/tolerations).
+
+## Building your own image
+
+Instead of the public `ghcr.io/docling-project` image, you can build your
+own on Red Hat OpenShift AI 3.5's own base image, with `docling-serve[rapidocr]`
+installed from Red Hat's package index:
+
+```bash
+podman login registry.redhat.io   # requires a Red Hat subscription/entitlement
+podman build -f Containerfile -t <your-registry>/docling-serve:<tag> .
+podman push <your-registry>/docling-serve:<tag>
+
+helm install docling-serve ./helm -n docling --create-namespace \
+  --set image.repository=<your-registry>/docling-serve \
+  --set image.tag=<tag>
+```
+
+Via the root Makefile: `make build-docling-serve` (builds it if `podman`
+is available; needs `REGISTRY`/`IMAGE_TAG` set, e.g. via `.env`).
+
+**Important — don't add a PyPI fallback to `requirements.txt` here.**
+This file deliberately uses `--index-url` only (Red Hat's package index),
+no `--extra-index-url`. Adding PyPI back in and resolving with a
+looser/"best available" strategy pulls a newer `docling` off PyPI than
+the `docling-jobkit` version it gets paired with from Red Hat's index —
+confirmed by hitting exactly that: the server started but failed
+application startup with `RuntimeError: Unexpected PDF backend type
+PdfBackend.THREADED_DOCLING_PARSE`. Resolving from Red Hat's index alone
+(the image builds on Linux/RHEL9, which that index has full native
+coverage for) gives a self-consistent set instead. This is different
+from the repo-root `requirements.txt`, which legitimately needs the PyPI
+fallback for local dev on non-Linux machines.
 
 ## Notes
 

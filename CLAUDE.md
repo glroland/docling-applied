@@ -57,9 +57,15 @@ Example names: `simple-examples`, `cli-examples`, `docling-serve`,
   `make lint`, `make build`, `make push`). Single test:
   `PYTHONPATH=src pytest tests/src/test_convert_to_md.py::test_name -v`
   (from inside `serverless-api-example/`).
-- **`docling-serve/`**: `helm lint docling-serve/helm`,
-  `helm template ... docling-serve/helm`, or
-  `oc apply -f docling-serve/manifests/docling-serve-quickstart.yaml`.
+- **`docling-serve/`**: mostly deploys the upstream project's public
+  image (`helm lint docling-serve/helm`, `helm template ...`, or
+  `oc apply -f docling-serve/manifests/docling-serve-quickstart.yaml`)
+  but also has its own `Containerfile` + `requirements.txt` for building
+  a custom image on Red Hat's base image. That `requirements.txt`
+  deliberately has no PyPI fallback (unlike the repo-root one) — see the
+  comment in the file and `docling-serve/README.md` before changing it;
+  adding PyPI back in previously produced a `docling`/`docling-jobkit`
+  version mismatch that crashed the server at startup.
 - **`batch-via-pipeline-example/`**: `python pipeline.py [output.yaml]`
   compiles the KFP pipeline (output path is an optional CLI arg, not
   hardcoded — see below).

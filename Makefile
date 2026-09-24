@@ -296,6 +296,12 @@ build-docling-serve: | $(TARGET_DIR)/docling-serve
 	else \
 		echo "[docling-serve] skipped — 'helm' not found"; \
 	fi
+	if command -v $(PODMAN) >/dev/null 2>&1; then \
+		echo "[docling-serve] building custom image (requires 'podman login registry.redhat.io')"; \
+		$(PODMAN) build -f docling-serve/Containerfile -t "$(REGISTRY)/docling-serve:$(IMAGE_TAG)" docling-serve; \
+	else \
+		echo "[docling-serve] skipped image build — 'podman' not found"; \
+	fi
 
 test-docling-serve:
 	@echo "[docling-serve] no standalone test — see 'make test-docling-serve-examples'"

@@ -45,6 +45,7 @@ optional Gradio UI, and OpenAPI docs.
 |---|---|
 | `manifests/docling-serve-quickstart.yaml` | Single `oc apply -f`, CPU image, no Helm |
 | `helm/` | Helm chart: configurable replicas, resources, GPU toggle, Route/TLS |
+| `Containerfile` + `requirements.txt` | Build your own image on Red Hat's base image instead of using the public one |
 
 **`docling-serve-examples/`** (clients):
 
@@ -82,6 +83,22 @@ python docling-serve-examples/python/convert_file_async.py samples/scanned.pdf h
 Via the root Makefile: `make deploy-docling-serve` then
 `make test-docling-serve-examples` (auto-discovers the Route if `oc` is
 logged in, or set `DOCLING_SERVE_URL` explicitly).
+
+Build your own image instead of the public one:
+
+```bash
+podman login registry.redhat.io   # requires a Red Hat subscription
+podman build -f docling-serve/Containerfile -t <registry>/docling-serve:<tag> docling-serve
+helm install docling-serve docling-serve/helm -n docling --create-namespace \
+  --set image.repository=<registry>/docling-serve --set image.tag=<tag>
+```
+
+Or via the root Makefile: `make build-docling-serve` (also does the
+`helm lint`/`helm template` checks). `docling-serve/requirements.txt`
+resolves from Red Hat's package index *only* (no PyPI fallback) —
+mixing in PyPI here previously produced a `docling`/`docling-jobkit`
+version mismatch that failed at server startup; see
+`docling-serve/README.md` for the full explanation before changing it.
 
 ## Configuration reference
 

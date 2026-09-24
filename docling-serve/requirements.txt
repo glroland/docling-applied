@@ -1,0 +1,22 @@
+# Pin for the custom docling-serve image built by ../Containerfile.
+#
+# Deliberately Red Hat's RHOAI 3.5 package index ONLY — no PyPI fallback,
+# unlike the repo-root requirements.txt. That fallback exists there for
+# local dev on macOS/Windows, where Red Hat's Linux-only wheels need PyPI
+# to fill gaps. This file only ever installs inside the Containerfile's
+# Linux (RHEL9) base image, where Red Hat's index has full native
+# coverage — mixing in PyPI here previously pulled a newer `docling` off
+# PyPI than the `docling-jobkit` it got paired with, producing an
+# internally inconsistent set that failed at runtime with
+# `RuntimeError: Unexpected PDF backend type PdfBackend.THREADED_DOCLING_PARSE`.
+# Verified fix: resolving against Red Hat's index alone, for the actual
+# Linux container platform, gives a fully self-consistent dependency set.
+#
+# Not routed through ../requirements.txt — that pins the `docling`
+# library for the example scripts; this pins `docling-serve` (the
+# server), which brings in its own compatible `docling` version as a
+# transitive dependency, and the two must not be mixed with different
+# index strategies.
+--index-url https://packages.redhat.com/api/pypi/public-rhai/rhoai/3.5/cpu-ubi9/simple/
+
+docling-serve[rapidocr]==1.16.1
