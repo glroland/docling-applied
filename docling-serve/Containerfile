@@ -37,7 +37,7 @@ RUN echo "Downloading models..." && \
 
 WORKDIR /opt/app-root/src
 
-EXPOSE 5001
+EXPOSE 8080
 
 # The command 'docling-serve run' will respect the ENV variables above
 ENTRYPOINT ["docling-serve", "run", "--host", "0.0.0.0", "--port", "8080", "--timeout-keep-alive", "900"]

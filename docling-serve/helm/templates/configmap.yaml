@@ -9,3 +9,6 @@ data:
   {{- if .Values.config.artifactsPath }}
   DOCLING_SERVE_ARTIFACTS_PATH: {{ .Values.config.artifactsPath | quote }}
   {{- end }}
+  # uvicorn (not docling-serve) owns host/port, hence the UVICORN_ prefix —
+  # see the comment on config.port in values.yaml.
+  UVICORN_PORT: {{ .Values.config.port | quote }}

@@ -15,7 +15,7 @@ a reason to build something custom, start here.
 ## How it works
 
 ```
-client ──HTTP──► docling-serve (Deployment/Route, port 5001)
+client ──HTTP──► docling-serve (Deployment/Route, port 8080)
                          │
                          ▼
                   DocumentConverter (same SDK as simple-examples/)
@@ -104,7 +104,7 @@ version mismatch that failed at server startup; see
 
 | Setting | Where | Notes |
 |---|---|---|
-| Port | Fixed at `5001` | Service/Route both target this |
+| Port | Fixed at `8080` (uvicorn default is `5001`; overridden via `UVICORN_PORT`) | Service/Route both target this |
 | Health checks | `/livez`, `/readyz` | Dedicated k8s-probe routes (separate from human-facing `/health`) |
 | `DOCLING_SERVE_ENABLE_UI` | ConfigMap / env | Enables the Gradio playground at `/ui` |
 | GPU | `helm --set gpu.enabled=true --set gpu.image.tag=<version>` | CUDA images don't publish a `latest` tag — pin explicitly |

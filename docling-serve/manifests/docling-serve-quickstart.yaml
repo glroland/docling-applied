@@ -18,7 +18,7 @@ metadata:
 spec:
   ports:
     - name: http
-      port: 5001
+      port: 8080
       targetPort: http
   selector:
     app: docling-serve
@@ -50,11 +50,16 @@ spec:
           imagePullPolicy: Always
           ports:
             - name: http
-              containerPort: 5001
+              containerPort: 8080
               protocol: TCP
           env:
             - name: DOCLING_SERVE_ENABLE_UI
               value: "true"
+            # docling-serve's uvicorn layer listens on 5001 by default;
+            # UVICORN_ (not DOCLING_SERVE_) is the prefix uvicorn itself
+            # reads, so this repo's 8080 standard has to go through it.
+            - name: UVICORN_PORT
+              value: "8080"
           resources:
             requests:
               cpu: "1"

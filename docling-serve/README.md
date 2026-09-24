@@ -90,8 +90,12 @@ fallback for local dev on non-Linux machines.
 
 ## Notes
 
-- **Port**: docling-serve listens on `5001` by default; that's what the
-  Service/Route target.
+- **Port**: docling-serve's uvicorn layer listens on `5001` by default,
+  but this repo standardizes on `8080` for the Service/Route/container
+  port instead (matching the custom image's `Containerfile` ENTRYPOINT).
+  That's set via the `UVICORN_PORT` env var — `UVICORN_` (not
+  `DOCLING_SERVE_`) is the prefix uvicorn's own settings read, so it's
+  wired separately from the rest of the `DOCLING_SERVE_*` config.
 - **Health checks**: the app exposes dedicated `/livez` and `/readyz`
   routes for Kubernetes probes (separate from the human-facing `/health`
   and `/version` endpoints).

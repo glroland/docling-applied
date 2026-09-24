@@ -20,6 +20,12 @@ config:
   # Optional: cache converted-model artifacts on a PVC instead of
   # re-downloading them on every pod restart. Leave blank to disable.
   artifactsPath: ""
+  # docling-serve's uvicorn layer listens on 5001 by default (see
+  # docling_serve.settings). This repo standardizes on 8080 instead,
+  # matching this Containerfile's ENTRYPOINT and the Deployment's
+  # containerPort/service.port below — that requires the UVICORN_ env
+  # prefix (not DOCLING_SERVE_), since uvicorn's own settings read it.
+  port: 8080
 
 # ---------------------------------------------------------------------------
 # GPU support
@@ -76,7 +82,7 @@ readinessProbe:
 # ---------------------------------------------------------------------------
 service:
   type: ClusterIP
-  port: 5001
+  port: 8080
 
 route:
   enabled: true
