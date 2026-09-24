@@ -16,8 +16,28 @@ WORKDIR /opt/app-root/src
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
+ENV OMP_NUM_THREADS=4 \
+    DOCLING_ARTIFACTS_PATH=/opt/app-root/src/.cache/docling/models \
+    HF_HOME=/tmp/ \
+    TORCH_HOME=/tmp/
+
 ENV DOCLING_SERVE_ENABLE_UI=true
+
+ENV DOCLING_SERVE_MAX_SYNC_WAIT=900
+
+ARG MODELS_LIST="layout tableformer rapidocr code_formula picture_classifier smolvlm"
+
+RUN echo "Downloading models..." && \
+    HF_HUB_DOWNLOAD_TIMEOUT="90" && \
+    HF_HUB_ETAG_TIMEOUT="90" && \
+    docling-tools models download -o "${DOCLING_ARTIFACTS_PATH}" $MODELS_LIST && \
+    hf download sentence-transformers/all-MiniLM-L6-v2 --local-dir /opt/app-root/src/.cache && \
+    chown -R 1001:0 ${DOCLING_ARTIFACTS_PATH} && \
+    chmod -R g=u ${DOCLING_ARTIFACTS_PATH}
+
+WORKDIR /opt/app-root/src
 
 EXPOSE 5001
 
-CMD ["docling-serve", "run"]
+# The command 'docling-serve run' will respect the ENV variables above
+ENTRYPOINT ["docling-serve", "run", "--host", "0.0.0.0", "--port", "8080", "--timeout-keep-alive", "900"]
