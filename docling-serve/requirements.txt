@@ -20,3 +20,4 @@
 --index-url https://packages.redhat.com/api/pypi/public-rhai/rhoai/3.5/cpu-ubi9/simple/
 
 docling-serve[rapidocr]==1.16.1
+docling-serve[ui]==1.16.1
