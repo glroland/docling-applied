@@ -308,8 +308,9 @@ test-docling-serve:
 
 deploy-docling-serve:
 	if command -v $(HELM) >/dev/null 2>&1 && command -v $(OC) >/dev/null 2>&1 && $(OC) whoami >/dev/null 2>&1; then \
-		echo "[docling-serve] deploying to namespace $(NAMESPACE)"; \
-		$(HELM) upgrade --install docling-serve docling-serve/helm -n "$(NAMESPACE)" --create-namespace; \
+		echo "[docling-serve] deploying to namespace $(NAMESPACE) with image $(REGISTRY)/docling-serve:$(IMAGE_TAG)"; \
+		$(HELM) upgrade --install docling-serve docling-serve/helm -n "$(NAMESPACE)" --create-namespace \
+			--set image.repository="$(REGISTRY)/docling-serve" --set image.tag="$(IMAGE_TAG)"; \
 	else \
 		echo "[docling-serve] skipped — need 'helm' and an active 'oc login' session"; \
 	fi
