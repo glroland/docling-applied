@@ -1,6 +1,6 @@
 # Docling version/extras/index are all controlled centrally — see
-# ../requirements.txt.
--r ../requirements.txt
+# ../../requirements.txt.
+-r ../../requirements.txt
 
 fastapi>=0.115.0
 uvicorn[standard]>=0.30.0

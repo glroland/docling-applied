@@ -12,7 +12,7 @@ spec:
     namespace: docling
     server: https://kubernetes.default.svc
   source:
-    path: serverless-api-example/deploy/helm
+    path: pending-redhat-testing/serverless-api-example/deploy/helm
     repoURL: https://github.com/<your-org>/docling-applied.git
     targetRevision: HEAD
     helm:

@@ -1,6 +1,6 @@
 # Serverless API
 
-**Folder:** [`serverless-api-example/`](../serverless-api-example/) · **Pattern:** Custom FastAPI service on Knative Serverless
+**Folder:** [`pending-redhat-testing/serverless-api-example/`](../pending-redhat-testing/serverless-api-example/) · **Pattern:** Custom FastAPI service on Knative Serverless · **Status:** pending Red Hat testing — not yet verified against a real cluster
 
 ## Overview
 
@@ -62,7 +62,7 @@ async event loop.
 ## Usage
 
 ```bash
-cd serverless-api-example
+cd pending-redhat-testing/serverless-api-example
 make install
 make run          # http://localhost:8080
 make test         # unit tests; integration tests self-skip if nothing's running

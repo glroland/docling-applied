@@ -1,6 +1,6 @@
 # Deploys docling-mcp as a streamable-http service on OpenShift, in remote
 # mode against a docling-serve deployment. Set DOCLING_MCP_SERVICE_URL to
-# your docling-serve Route (see ../../docling-serve/) before applying.
+# your docling-serve Route (see ../../../docling-serve/) before applying.
 #
 #   oc apply -f manifest.yaml
 #   oc set env deployment/docling-mcp DOCLING_MCP_SERVICE_URL=https://<docling-serve-route>

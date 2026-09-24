@@ -42,10 +42,10 @@ def _assert_json_body(body: str) -> None:
     assert isinstance(doc["pages"], dict), "'pages' must be an object"
     assert len(doc["pages"]) > 0, "Document contains no pages"
 
-SAMPLES_DIR = Path(__file__).parents[3] / "samples"
+SAMPLES_DIR = Path(__file__).parents[4] / "samples"
 # Repo-root target/ by default (never this example's own subfolder);
 # override with TARGET_DIR if a caller wants somewhere else.
-TARGET_DIR = Path(os.getenv("TARGET_DIR", Path(__file__).parents[3] / "target" / "serverless-api-example"))
+TARGET_DIR = Path(os.getenv("TARGET_DIR", Path(__file__).parents[4] / "target" / "serverless-api-example"))
 SERVICE_URL = os.getenv("SERVICE_URL", "http://localhost:8080")
 
 SAMPLE_FILES = sorted(SAMPLES_DIR.glob("*"))

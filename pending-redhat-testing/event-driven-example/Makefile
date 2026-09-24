@@ -1,16 +1,17 @@
-# Repo-root .env (see ../.env.example) — same file the root Makefile
+# Repo-root .env (see ../../.env.example) — same file the root Makefile
 # reads, so NAMESPACE/PODMAN stay consistent whether you deploy/build via
 # `make deploy-event-driven-example`/`build-event-driven-example` at the
 # root or `make deploy`/`build` here. Note IMAGE below is this
 # Makefile's own knob, not derived from the root's REGISTRY/IMAGE_TAG —
 # override it directly (`make build IMAGE=...`) if you need it to match.
-# Silently skipped if absent; `?=` defaults below still apply.
--include $(CURDIR)/../.env
+# Silently skipped if absent; `?=` defaults below still apply. This
+# Makefile lives two levels down (pending-redhat-testing/<example>/).
+-include $(CURDIR)/../../.env
 
 IMAGE    ?= quay.io/<your-org>/docling-event-driven-example:0.1.0
 NAMESPACE ?= docling
 
-# Container engine — override to `docker` via ../.env or the command
+# Container engine — override to `docker` via ../../.env or the command
 # line (`make build PODMAN=docker`) if you don't use Podman.
 PODMAN ?= podman
 

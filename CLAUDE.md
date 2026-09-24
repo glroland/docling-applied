@@ -12,7 +12,16 @@ different consumption pattern (direct SDK use, CLI, REST API, batch
 pipeline, custom microservice, event-driven, RAG, agentic/MCP), plus a
 `docs/` reference layer and a root `Makefile` that smoke-tests all of them.
 
-`README.md` is the fast-path entry point (one-line-per-example table).
+Four of the nine — `serverless-api-example`, `event-driven-example`,
+`rag-via-ogx-example`, and `mcp-example` — live under
+`pending-redhat-testing/` rather than the repo root: complete
+quickstarts, but not yet tested/confirmed against a real Red Hat
+OpenShift AI 3.5 cluster. Preserve that grouping when editing them
+(paths are `pending-redhat-testing/<example>/...`); move an example back
+to the repo root only when told it's been verified.
+
+`README.md` is the fast-path entry point (one-line-per-example table,
+split into a main list and the pending-testing list above).
 `docs/README.md` is the full reference layer — read a `docs/<name>.md`
 file before making non-trivial changes to the corresponding example, it
 documents the intended architecture and config surface in more depth than
@@ -52,11 +61,14 @@ Example names: `simple-examples`, `cli-examples`, `docling-serve`,
 
 ### Per-example commands
 
-- **`serverless-api-example/`** and **`event-driven-example/`** each have
-  their own `Makefile` (`make install`, `make run`, `make test`,
-  `make lint`, `make build`, `make push`). Single test:
+- **`pending-redhat-testing/serverless-api-example/`** and
+  **`pending-redhat-testing/event-driven-example/`** each have their own
+  `Makefile` (`make install`, `make run`, `make test`, `make lint`,
+  `make build`, `make push`) — it `-include`s the repo-root `.env` (two
+  levels up) so `REGISTRY`/`IMAGE_TAG`/`PODMAN` still match the root
+  Makefile's build-* targets for the same example. Single test:
   `PYTHONPATH=src pytest tests/src/test_convert_to_md.py::test_name -v`
-  (from inside `serverless-api-example/`).
+  (from inside `pending-redhat-testing/serverless-api-example/`).
 - **`docling-serve/`**: mostly deploys the upstream project's public
   image (`helm lint docling-serve/helm`, `helm template ...`, or
   `oc apply -f docling-serve/manifests/docling-serve-quickstart.yaml`)
@@ -146,13 +158,16 @@ one's scope.
 
 Two provenance notes worth knowing before editing:
 - `simple-examples/`, `docling-serve/`+`docling-serve-examples/`,
-  `batch-via-pipeline-example/`, `serverless-api-example/`, and
-  `event-driven-example/` originated as working code from past customer
-  engagements, since generalized (vendor-neutral object storage instead
-  of Azure-specific, public base images instead of private ones, APIs
-  re-verified against current Docling/docling-serve source).
-- `cli-examples/`, `rag-via-ogx-example/`, and `mcp-example/` were built
-  fresh against the upstream `docling`/`docling-mcp`/Llama Stack projects.
+  `batch-via-pipeline-example/`,
+  `pending-redhat-testing/serverless-api-example/`, and
+  `pending-redhat-testing/event-driven-example/` originated as working
+  code from past customer engagements, since generalized (vendor-neutral
+  object storage instead of Azure-specific, public base images instead
+  of private ones, APIs re-verified against current Docling/docling-serve
+  source).
+- `cli-examples/`, `pending-redhat-testing/rag-via-ogx-example/`, and
+  `pending-redhat-testing/mcp-example/` were built fresh against the
+  upstream `docling`/`docling-mcp`/Llama Stack projects.
   `rag-via-ogx-example/`'s Llama Stack client API surface is the least
   stable dependency in this repo (see that example's README/docs for the
   native-API-vs-OpenAI-compatible-layer caveat) — verify method names

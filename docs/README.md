@@ -15,10 +15,21 @@ prerequisites, usage, and when (not) to reach for it.
 | [CLI Examples](cli-examples.md) | `cli-examples/` | The `docling` command-line tool — no Python |
 | [Docling Serve](docling-serve.md) | `docling-serve/`, `docling-serve-examples/` | Deploy the upstream `docling-serve` REST API |
 | [Batch via Pipeline](batch-via-pipeline-example.md) | `batch-via-pipeline-example/` | Data Science Pipeline (Kubeflow Pipelines) |
-| [Serverless API](serverless-api-example.md) | `serverless-api-example/` | Custom FastAPI service on Knative Serverless |
-| [Event-Driven](event-driven-example.md) | `event-driven-example/` | Knative Eventing, triggered by object storage uploads |
-| [RAG via OGX](rag-via-ogx-example.md) | `rag-via-ogx-example/` | Docling chunking + OpenShift AI's Llama Stack (OGX) |
-| [MCP](mcp-example.md) | `mcp-example/` | `docling-mcp` — Docling as agent tools (Model Context Protocol) |
+
+### Pending Red Hat testing
+
+These four have not yet been tested/confirmed against a real Red Hat
+OpenShift AI 3.5 cluster and live under
+[`pending-redhat-testing/`](../pending-redhat-testing/) rather than the
+repo root until that verification happens — see the note in the root
+[`README.md`](../README.md#pending-red-hat-testing).
+
+| Doc | Example folder(s) | Pattern |
+|---|---|---|
+| [Serverless API](serverless-api-example.md) | `pending-redhat-testing/serverless-api-example/` | Custom FastAPI service on Knative Serverless |
+| [Event-Driven](event-driven-example.md) | `pending-redhat-testing/event-driven-example/` | Knative Eventing, triggered by object storage uploads |
+| [RAG via OGX](rag-via-ogx-example.md) | `pending-redhat-testing/rag-via-ogx-example/` | Docling chunking + OpenShift AI's Llama Stack (OGX) |
+| [MCP](mcp-example.md) | `pending-redhat-testing/mcp-example/` | `docling-mcp` — Docling as agent tools (Model Context Protocol) |
 
 ## Recommended approaches
 

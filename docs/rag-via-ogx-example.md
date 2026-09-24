@@ -1,6 +1,6 @@
 # RAG via OGX
 
-**Folder:** [`rag-via-ogx-example/`](../rag-via-ogx-example/) · **Pattern:** Docling chunking + OpenShift AI's Llama Stack (OGX)
+**Folder:** [`pending-redhat-testing/rag-via-ogx-example/`](../pending-redhat-testing/rag-via-ogx-example/) · **Pattern:** Docling chunking + OpenShift AI's Llama Stack (OGX) · **Status:** pending Red Hat testing — not yet verified against a real cluster
 
 ## Overview
 
@@ -44,7 +44,7 @@ retrieval, and LLM serving — configured once at the platform level.
   model registered, and a vector database provider configured (inline
   Milvus, remote Milvus, FAISS, or pgvector)
 - The Llama Stack route/URL for that distribution
-- Python 3.11+, `pip install -r rag-via-ogx-example/requirements.txt`
+- Python 3.11+, `pip install -r pending-redhat-testing/rag-via-ogx-example/requirements.txt`
 
 ## Repository layout
 
@@ -56,10 +56,10 @@ retrieval, and LLM serving — configured once at the platform level.
 ## Usage
 
 ```bash
-pip install -r rag-via-ogx-example/requirements.txt
+pip install -r pending-redhat-testing/rag-via-ogx-example/requirements.txt
 
-python rag-via-ogx-example/ingest.py samples/hybrid.pdf https://<llama-stack-route> docling-rag-example
-python rag-via-ogx-example/query.py "What does this document say about X?" https://<llama-stack-route> docling-rag-example
+python pending-redhat-testing/rag-via-ogx-example/ingest.py samples/hybrid.pdf https://<llama-stack-route> docling-rag-example
+python pending-redhat-testing/rag-via-ogx-example/query.py "What does this document say about X?" https://<llama-stack-route> docling-rag-example
 ```
 
 Via the root Makefile: `make test-rag-via-ogx-example LLAMA_STACK_URL=<route>`.

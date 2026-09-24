@@ -388,10 +388,10 @@ c.create_run_from_pipeline_package('$(TARGET_DIR)/batch-via-pipeline-example/doc
 
 build-serverless-api-example: | $(VENV_PYTHON)
 	@echo "[serverless-api-example] installing requirements"
-	$(PIP) -q -r serverless-api-example/requirements-dev.txt
+	$(PIP) -q -r pending-redhat-testing/serverless-api-example/requirements-dev.txt
 	if command -v $(PODMAN) >/dev/null 2>&1; then \
 		echo "[serverless-api-example] building container image"; \
-		$(PODMAN) build -f serverless-api-example/Containerfile -t "$(REGISTRY)/serverless-api-example:$(IMAGE_TAG)" serverless-api-example; \
+		$(PODMAN) build -f pending-redhat-testing/serverless-api-example/Containerfile -t "$(REGISTRY)/serverless-api-example:$(IMAGE_TAG)" pending-redhat-testing/serverless-api-example; \
 	else \
 		echo "[serverless-api-example] skipped image build — '$(PODMAN)' not found"; \
 	fi
@@ -404,27 +404,27 @@ test-serverless-api-example: test-serverless-api-example-health test-serverless-
 # default since the skip is cheap, but it's the one worth isolating when
 # you *do* have a service up and want to re-run just that.
 test-serverless-api-example-health: build-serverless-api-example | $(TARGET_DIR)/serverless-api-example
-	PYTHONPATH="$(ROOT_DIR)/serverless-api-example/src" \
-	$(PYTHON) -m pytest serverless-api-example/tests/src/test_health.py -v -o cache_dir="$(TARGET_DIR)/serverless-api-example/.pytest_cache"
+	PYTHONPATH="$(ROOT_DIR)/pending-redhat-testing/serverless-api-example/src" \
+	$(PYTHON) -m pytest pending-redhat-testing/serverless-api-example/tests/src/test_health.py -v -o cache_dir="$(TARGET_DIR)/serverless-api-example/.pytest_cache"
 
 test-serverless-api-example-convert-md: build-serverless-api-example | $(TARGET_DIR)/serverless-api-example
-	PYTHONPATH="$(ROOT_DIR)/serverless-api-example/src" \
-	$(PYTHON) -m pytest serverless-api-example/tests/src/test_convert_to_md.py -v -o cache_dir="$(TARGET_DIR)/serverless-api-example/.pytest_cache"
+	PYTHONPATH="$(ROOT_DIR)/pending-redhat-testing/serverless-api-example/src" \
+	$(PYTHON) -m pytest pending-redhat-testing/serverless-api-example/tests/src/test_convert_to_md.py -v -o cache_dir="$(TARGET_DIR)/serverless-api-example/.pytest_cache"
 
 test-serverless-api-example-convert-json: build-serverless-api-example | $(TARGET_DIR)/serverless-api-example
-	PYTHONPATH="$(ROOT_DIR)/serverless-api-example/src" \
-	$(PYTHON) -m pytest serverless-api-example/tests/src/test_convert_to_json.py -v -o cache_dir="$(TARGET_DIR)/serverless-api-example/.pytest_cache"
+	PYTHONPATH="$(ROOT_DIR)/pending-redhat-testing/serverless-api-example/src" \
+	$(PYTHON) -m pytest pending-redhat-testing/serverless-api-example/tests/src/test_convert_to_json.py -v -o cache_dir="$(TARGET_DIR)/serverless-api-example/.pytest_cache"
 
 test-serverless-api-example-integration: build-serverless-api-example | $(TARGET_DIR)/serverless-api-example
 	@echo "[serverless-api-example] integration test (self-skips if SERVICE_URL is unreachable)"
-	PYTHONPATH="$(ROOT_DIR)/serverless-api-example/src" \
+	PYTHONPATH="$(ROOT_DIR)/pending-redhat-testing/serverless-api-example/src" \
 	TARGET_DIR="$(TARGET_DIR)/serverless-api-example" \
-	$(PYTHON) -m pytest serverless-api-example/tests/src/test_integration_samples.py -v -o cache_dir="$(TARGET_DIR)/serverless-api-example/.pytest_cache"
+	$(PYTHON) -m pytest pending-redhat-testing/serverless-api-example/tests/src/test_integration_samples.py -v -o cache_dir="$(TARGET_DIR)/serverless-api-example/.pytest_cache"
 
 deploy-serverless-api-example:
 	if command -v $(HELM) >/dev/null 2>&1 && command -v $(OC) >/dev/null 2>&1 && $(OC) whoami >/dev/null 2>&1; then \
 		echo "[serverless-api-example] deploying to namespace $(NAMESPACE)"; \
-		$(HELM) upgrade --install serverless-api-example serverless-api-example/deploy/helm -n "$(NAMESPACE)" --create-namespace \
+		$(HELM) upgrade --install serverless-api-example pending-redhat-testing/serverless-api-example/deploy/helm -n "$(NAMESPACE)" --create-namespace \
 			--set image.repository="$(REGISTRY)/serverless-api-example" --set image.tag="$(IMAGE_TAG)"; \
 	else \
 		echo "[serverless-api-example] skipped — need 'helm' and an active 'oc login' session"; \
@@ -436,10 +436,10 @@ deploy-serverless-api-example:
 
 build-event-driven-example: | $(VENV_PYTHON)
 	@echo "[event-driven-example] installing requirements"
-	$(PIP) -q -r event-driven-example/requirements-dev.txt
+	$(PIP) -q -r pending-redhat-testing/event-driven-example/requirements-dev.txt
 	if command -v $(PODMAN) >/dev/null 2>&1; then \
 		echo "[event-driven-example] building container image"; \
-		$(PODMAN) build -f event-driven-example/Containerfile -t "$(REGISTRY)/docling-event-driven-example:$(IMAGE_TAG)" event-driven-example; \
+		$(PODMAN) build -f pending-redhat-testing/event-driven-example/Containerfile -t "$(REGISTRY)/docling-event-driven-example:$(IMAGE_TAG)" pending-redhat-testing/event-driven-example; \
 	else \
 		echo "[event-driven-example] skipped image build — '$(PODMAN)' not found"; \
 	fi
@@ -450,17 +450,17 @@ test-event-driven-example: test-event-driven-example-ingest test-event-driven-ex
 # tests/test_send_cloud_event.py) — split so either can be re-run alone
 # against a live deployment without the other.
 test-event-driven-example-ingest: build-event-driven-example | $(TARGET_DIR)/event-driven-example
-	$(PYTHON) -m pytest "event-driven-example/tests/test_send_cloud_event.py::TestSendCloudEvent::test_send_document_ingest_event" \
+	$(PYTHON) -m pytest "pending-redhat-testing/event-driven-example/tests/test_send_cloud_event.py::TestSendCloudEvent::test_send_document_ingest_event" \
 		-v -o cache_dir="$(TARGET_DIR)/event-driven-example/.pytest_cache"
 
 test-event-driven-example-invalid-payload: build-event-driven-example | $(TARGET_DIR)/event-driven-example
-	$(PYTHON) -m pytest "event-driven-example/tests/test_send_cloud_event.py::TestSendCloudEvent::test_send_invalid_payload_returns_400" \
+	$(PYTHON) -m pytest "pending-redhat-testing/event-driven-example/tests/test_send_cloud_event.py::TestSendCloudEvent::test_send_invalid_payload_returns_400" \
 		-v -o cache_dir="$(TARGET_DIR)/event-driven-example/.pytest_cache"
 
 deploy-event-driven-example:
 	if command -v $(HELM) >/dev/null 2>&1 && command -v $(OC) >/dev/null 2>&1 && $(OC) whoami >/dev/null 2>&1; then \
 		echo "[event-driven-example] deploying to namespace $(NAMESPACE)"; \
-		$(HELM) upgrade --install docling-eventing event-driven-example/deploy/helm -n "$(NAMESPACE)" --create-namespace \
+		$(HELM) upgrade --install docling-eventing pending-redhat-testing/event-driven-example/deploy/helm -n "$(NAMESPACE)" --create-namespace \
 			--set image.repository="$(REGISTRY)/docling-event-driven-example" --set image.tag="$(IMAGE_TAG)"; \
 	else \
 		echo "[event-driven-example] skipped — need 'helm' and an active 'oc login' session"; \
@@ -472,14 +472,14 @@ deploy-event-driven-example:
 
 build-rag-via-ogx-example: | $(VENV_PYTHON)
 	@echo "[rag-via-ogx-example] installing requirements"
-	$(PIP) -q -r rag-via-ogx-example/requirements.txt
+	$(PIP) -q -r pending-redhat-testing/rag-via-ogx-example/requirements.txt
 
 test-rag-via-ogx-example: test-rag-via-ogx-example-ingest test-rag-via-ogx-example-query
 
 test-rag-via-ogx-example-ingest: build-rag-via-ogx-example | $(TARGET_DIR)/rag-via-ogx-example
 	if [ -n "$(LLAMA_STACK_URL)" ]; then \
 		echo "[rag-via-ogx-example] ingesting sample against $(LLAMA_STACK_URL)"; \
-		$(PYTHON) rag-via-ogx-example/ingest.py "$(SAMPLE_HYBRID)" "$(LLAMA_STACK_URL)" docling-smoke-test; \
+		$(PYTHON) pending-redhat-testing/rag-via-ogx-example/ingest.py "$(SAMPLE_HYBRID)" "$(LLAMA_STACK_URL)" docling-smoke-test; \
 	else \
 		echo "[rag-via-ogx-example] skipped — set LLAMA_STACK_URL to a live LlamaStackDistribution route"; \
 	fi
@@ -489,7 +489,7 @@ test-rag-via-ogx-example-ingest: build-rag-via-ogx-example | $(TARGET_DIR)/rag-v
 test-rag-via-ogx-example-query: test-rag-via-ogx-example-ingest | $(TARGET_DIR)/rag-via-ogx-example
 	if [ -n "$(LLAMA_STACK_URL)" ]; then \
 		echo "[rag-via-ogx-example] querying against $(LLAMA_STACK_URL)"; \
-		$(PYTHON) rag-via-ogx-example/query.py "What is this document about?" "$(LLAMA_STACK_URL)" docling-smoke-test \
+		$(PYTHON) pending-redhat-testing/rag-via-ogx-example/query.py "What is this document about?" "$(LLAMA_STACK_URL)" docling-smoke-test \
 			| tee "$(TARGET_DIR)/rag-via-ogx-example/query-output.txt"; \
 	else \
 		echo "[rag-via-ogx-example] skipped — set LLAMA_STACK_URL to a live LlamaStackDistribution route"; \
@@ -504,10 +504,10 @@ deploy-rag-via-ogx-example:
 
 build-mcp-example: | $(VENV_PYTHON)
 	@echo "[mcp-example] installing requirements"
-	$(PIP) -q -r mcp-example/requirements.txt
+	$(PIP) -q -r pending-redhat-testing/mcp-example/requirements.txt
 	if command -v $(PODMAN) >/dev/null 2>&1; then \
 		echo "[mcp-example] building container image"; \
-		$(PODMAN) build -f mcp-example/Containerfile -t "$(REGISTRY)/docling-mcp-example:$(IMAGE_TAG)" mcp-example; \
+		$(PODMAN) build -f pending-redhat-testing/mcp-example/Containerfile -t "$(REGISTRY)/docling-mcp-example:$(IMAGE_TAG)" pending-redhat-testing/mcp-example; \
 	else \
 		echo "[mcp-example] skipped image build — '$(PODMAN)' not found"; \
 	fi
@@ -520,7 +520,7 @@ test-mcp-example: build-mcp-example | $(TARGET_DIR)/mcp-example
 deploy-mcp-example:
 	if command -v $(OC) >/dev/null 2>&1 && $(OC) whoami >/dev/null 2>&1; then \
 		echo "[mcp-example] deploying to namespace $(NAMESPACE)"; \
-		$(OC) apply -f mcp-example/deploy/manifest.yaml -n "$(NAMESPACE)"; \
+		$(OC) apply -f pending-redhat-testing/mcp-example/deploy/manifest.yaml -n "$(NAMESPACE)"; \
 	else \
 		echo "[mcp-example] skipped — need an active 'oc login' session"; \
 	fi

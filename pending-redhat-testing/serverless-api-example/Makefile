@@ -1,8 +1,9 @@
-# Repo-root .env (see ../.env.example) — same file the root Makefile
+# Repo-root .env (see ../../.env.example) — same file the root Makefile
 # reads, so REGISTRY/IMAGE_TAG/PODMAN stay consistent whether you build
 # via `make build-serverless-api-example` at the root or `make build`
 # here. Silently skipped if absent; `?=` defaults below still apply.
--include $(CURDIR)/../.env
+# This Makefile lives two levels down (pending-redhat-testing/<example>/).
+-include $(CURDIR)/../../.env
 
 IMAGE_NAME   	?= serverless-api-example
 IMAGE_TAG    	?= 0.1.0
@@ -12,7 +13,7 @@ PORT         	?= 8080
 PYTHONPATH   	:= $(CURDIR)/src
 DEPLOYMENT_URL 	:= https://serverless-api-example-docling.apps.<CLUSTER_URL>
 
-# Container engine — override to `docker` via ../.env or the command
+# Container engine — override to `docker` via ../../.env or the command
 # line (`make build PODMAN=docker`) if you don't use Podman.
 PODMAN ?= podman
 

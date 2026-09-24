@@ -7,7 +7,7 @@ back to a different bucket/prefix.
 This mirrors the reference architecture Red Hat has published for
 production RAG ingestion on OpenShift AI (Docling + Data Science Pipelines,
 with Ray/Milvus/vLLM layered on top for the full RAG case — see
-rag-via-ogx-example/ for that next step).
+pending-redhat-testing/rag-via-ogx-example/ for that next step).
 
 Compile:
     python pipeline.py [output_path]

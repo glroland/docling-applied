@@ -40,4 +40,4 @@ database. Then answer: <your question about the document>.
 
 Requires launching the server with the `llama-stack-rag` toolgroup and
 `DOCLING_MCP_LLS_URL` pointed at your Llama Stack distribution — see
-`../rag-via-ogx-example/` for the non-agentic version of the same flow.
+`../../rag-via-ogx-example/` for the non-agentic version of the same flow.

@@ -1,6 +1,6 @@
 # Event-Driven
 
-**Folder:** [`event-driven-example/`](../event-driven-example/) · **Pattern:** Knative Eventing, triggered by object storage uploads
+**Folder:** [`pending-redhat-testing/event-driven-example/`](../pending-redhat-testing/event-driven-example/) · **Pattern:** Knative Eventing, triggered by object storage uploads · **Status:** pending Red Hat testing — not yet verified against a real cluster
 
 ## Overview
 
@@ -65,7 +65,7 @@ function publishes `com.docling.document.processed` (same references,
 `"status": "success"`) to the output Channel.
 
 ```bash
-cd event-driven-example
+cd pending-redhat-testing/event-driven-example
 make build IMAGE=quay.io/<your-org>/docling-event-driven-example:0.1.0
 make push  IMAGE=quay.io/<your-org>/docling-event-driven-example:0.1.0
 make deploy IMAGE=quay.io/<your-org>/docling-event-driven-example:0.1.0 NAMESPACE=docling

@@ -20,10 +20,21 @@ reference.**
 | [`cli-examples/`](cli-examples/) ([docs](docs/cli-examples.md)) | The `docling` command-line tool | One-off conversions or shell-pipeline use, no Python |
 | [`docling-serve/`](docling-serve/) + [`docling-serve-examples/`](docling-serve-examples/) ([docs](docs/docling-serve.md)) | Deploy the upstream `docling-serve` REST API | The default choice for "I need a Docling API on my cluster" — no custom code |
 | [`batch-via-pipeline-example/`](batch-via-pipeline-example/) ([docs](docs/batch-via-pipeline-example.md)) | Data Science Pipeline (KFP) | Converting a whole bucket of documents at once; scheduled/repeatable ingestion |
-| [`serverless-api-example/`](serverless-api-example/) ([docs](docs/serverless-api-example.md)) | Custom FastAPI service on Knative Serverless | You need business logic docling-serve doesn't provide (custom auth, response shaping, embedding Docling in a larger API) |
-| [`event-driven-example/`](event-driven-example/) ([docs](docs/event-driven-example.md)) | Knative Eventing, CloudEvents | Conversion should react to an upload landing in object storage, not a client request |
-| [`rag-via-ogx-example/`](rag-via-ogx-example/) ([docs](docs/rag-via-ogx-example.md)) | Docling chunking + OpenShift AI Llama Stack (OGX) | Full RAG: parse, chunk, embed, retrieve, generate |
-| [`mcp-example/`](mcp-example/) ([docs](docs/mcp-example.md)) | `docling-mcp` (Model Context Protocol) | An agent should call Docling itself, not a human/application |
+
+### Pending Red Hat testing
+
+These four are complete quickstarts but haven't been tested/confirmed yet
+against a real Red Hat OpenShift AI 3.5 cluster, so they live under
+[`pending-redhat-testing/`](pending-redhat-testing/) instead of the repo
+root — treat them as less battle-tested than the list above until they
+graduate out of this folder.
+
+| Example | Pattern | When to reach for it |
+|---|---|---|
+| [`pending-redhat-testing/serverless-api-example/`](pending-redhat-testing/serverless-api-example/) ([docs](docs/serverless-api-example.md)) | Custom FastAPI service on Knative Serverless | You need business logic docling-serve doesn't provide (custom auth, response shaping, embedding Docling in a larger API) |
+| [`pending-redhat-testing/event-driven-example/`](pending-redhat-testing/event-driven-example/) ([docs](docs/event-driven-example.md)) | Knative Eventing, CloudEvents | Conversion should react to an upload landing in object storage, not a client request |
+| [`pending-redhat-testing/rag-via-ogx-example/`](pending-redhat-testing/rag-via-ogx-example/) ([docs](docs/rag-via-ogx-example.md)) | Docling chunking + OpenShift AI Llama Stack (OGX) | Full RAG: parse, chunk, embed, retrieve, generate |
+| [`pending-redhat-testing/mcp-example/`](pending-redhat-testing/mcp-example/) ([docs](docs/mcp-example.md)) | `docling-mcp` (Model Context Protocol) | An agent should call Docling itself, not a human/application |
 
 ## Setup
 
@@ -116,14 +127,16 @@ make deploy REGISTRY=quay.io/one-off-override   # wins even with a .env present
 ## Provenance
 
 `simple-examples/`, `docling-serve/`/`docling-serve-examples/`,
-`batch-via-pipeline-example/`, `serverless-api-example/`, and
-`event-driven-example/` were built from working code used in past
-customer engagements, generalized (vendor-neutral storage, public base
-images, corrected against Docling's current APIs) into standalone
-quickstarts. `cli-examples/`, `rag-via-ogx-example/`, and `mcp-example/`
-are new, built against the upstream `docling`/`docling-serve`/`docling-mcp`/
-Llama Stack projects directly. None of this is meant to be taken as-is
-into production —
+`batch-via-pipeline-example/`,
+`pending-redhat-testing/serverless-api-example/`, and
+`pending-redhat-testing/event-driven-example/` were built from working
+code used in past customer engagements, generalized (vendor-neutral
+storage, public base images, corrected against Docling's current APIs)
+into standalone quickstarts. `cli-examples/`,
+`pending-redhat-testing/rag-via-ogx-example/`, and
+`pending-redhat-testing/mcp-example/` are new, built against the
+upstream `docling`/`docling-serve`/`docling-mcp`/Llama Stack projects
+directly. None of this is meant to be taken as-is into production —
 verify image references, resource sizing, and API surfaces (especially
 Llama Stack's, which is still moving quickly) against your actual
 OpenShift AI 3.5 cluster before relying on any of it in a customer

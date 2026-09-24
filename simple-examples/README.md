@@ -15,7 +15,8 @@ Run it in an OpenShift AI workbench, or any Python 3.11+ environment.
 - `scripts/convert_image.py` — convert a local image (PNG/JPEG/TIFF)
 - `scripts/convert_webpage.py` — convert a live URL
 - `scripts/chunking.py` — convert + split into structure-aware chunks with
-  `HybridChunker` (the input shape used by `rag-via-ogx-example/`)
+  `HybridChunker` (the input shape used by
+  `pending-redhat-testing/rag-via-ogx-example/`)
 
 ## Running the scripts
 
@@ -47,5 +48,5 @@ choice, batch size — for production use:
   REST API
 - `batch-via-pipeline-example/` — the same SDK calls, run as a Data Science
   Pipeline over many documents
-- `serverless-api-example/` — a custom microservice with GPU/OCR tuning
-  exposed as config
+- `pending-redhat-testing/serverless-api-example/` — a custom microservice
+  with GPU/OCR tuning exposed as config

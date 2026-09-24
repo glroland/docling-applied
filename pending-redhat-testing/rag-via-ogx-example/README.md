@@ -29,7 +29,7 @@ once at the platform level instead of per-application.
 ```bash
 pip install -r requirements.txt
 
-python ingest.py ../samples/hybrid.pdf https://<llama-stack-route> docling-rag-example
+python ingest.py ../../samples/hybrid.pdf https://<llama-stack-route> docling-rag-example
 python query.py "What does this document say about X?" https://<llama-stack-route> docling-rag-example
 ```
 

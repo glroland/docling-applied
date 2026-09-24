@@ -1,6 +1,6 @@
 # MCP
 
-**Folder:** [`mcp-example/`](../mcp-example/) · **Pattern:** `docling-mcp` — Docling as agent tools (Model Context Protocol)
+**Folder:** [`pending-redhat-testing/mcp-example/`](../pending-redhat-testing/mcp-example/) · **Pattern:** `docling-mcp` — Docling as agent tools (Model Context Protocol) · **Status:** pending Red Hat testing — not yet verified against a real cluster
 
 ## Overview
 
@@ -60,10 +60,10 @@ Network-reachable server (streamable-http), remote mode against
 `docling-serve`:
 
 ```bash
-podman build -f mcp-example/Containerfile -t quay.io/<your-org>/docling-mcp-example:0.1.0 mcp-example
+podman build -f pending-redhat-testing/mcp-example/Containerfile -t quay.io/<your-org>/docling-mcp-example:0.1.0 pending-redhat-testing/mcp-example
 podman push quay.io/<your-org>/docling-mcp-example:0.1.0
 
-oc apply -f mcp-example/deploy/manifest.yaml
+oc apply -f pending-redhat-testing/mcp-example/deploy/manifest.yaml
 oc set env deployment/docling-mcp DOCLING_MCP_SERVICE_URL=https://<docling-serve-route>
 ```
 

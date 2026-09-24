@@ -1,5 +1,5 @@
 # Runs docling-mcp as a network-reachable streamable-http MCP server, in
-# remote mode against a docling-serve deployment (see ../docling-serve/).
+# remote mode against a docling-serve deployment (see ../../docling-serve/).
 # Use this when your agent framework needs an MCP endpoint on the network
 # rather than a client-local stdio process.
 #

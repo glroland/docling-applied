@@ -5,7 +5,7 @@ deploys as a Knative Serverless workload (scale-to-zero, GPU-aware) on
 OpenShift Serverless.
 
 **Before reaching for this one**: if you just need a REST API in front of
-Docling, deploy [`../docling-serve/`](../docling-serve/) instead — it's
+Docling, deploy [`../../docling-serve/`](../../docling-serve/) instead — it's
 the officially supported, zero-code path. Build this pattern when you need
 something docling-serve doesn't give you out of the box: custom auth,
 response shaping, per-tenant logic, embedding a Docling call inside a

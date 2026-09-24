@@ -4,8 +4,9 @@
 This is the step between "convert to Markdown/JSON" and "load into a vector
 database": Docling's HybridChunker walks the document's structure (sections,
 tables, lists) rather than cutting text at a fixed character count, so each
-chunk stays semantically coherent. See rag-via-ogx-example/ for how these
-chunks get embedded and queried through Llama Stack.
+chunk stays semantically coherent. See
+pending-redhat-testing/rag-via-ogx-example/ for how these chunks get
+embedded and queried through Llama Stack.
 
 Usage:
     python chunking.py <path/to/file.pdf> [output_dir]

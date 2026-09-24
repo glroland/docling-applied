@@ -15,7 +15,7 @@ human/application calling a REST API directly.
   Simple, no other infrastructure, but every client pays Docling's model
   load cost.
 - **`remote`** (recommended) — delegates conversion to a `docling-serve`
-  deployment via HTTP. Point it at [`../docling-serve/`](../docling-serve/)
+  deployment via HTTP. Point it at [`../../docling-serve/`](../../docling-serve/)
   from this repo.
 - **`hybrid`** — remote with automatic local fallback
   (`DOCLING_MCP_FALLBACK_TO_LOCAL=true`).
