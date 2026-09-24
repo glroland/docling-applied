@@ -1,3 +1,9 @@
+# Repo-root .env (see ../.env.example) — same file the root Makefile
+# reads, so REGISTRY/IMAGE_TAG/PODMAN stay consistent whether you build
+# via `make build-serverless-api-example` at the root or `make build`
+# here. Silently skipped if absent; `?=` defaults below still apply.
+-include $(CURDIR)/../.env
+
 IMAGE_NAME   	?= serverless-api-example
 IMAGE_TAG    	?= 0.1.0
 REGISTRY     	?= quay.io/<your-org>
@@ -5,6 +11,10 @@ FULL_IMAGE   	:= $(REGISTRY)/$(IMAGE_NAME):$(IMAGE_TAG)
 PORT         	?= 8080
 PYTHONPATH   	:= $(CURDIR)/src
 DEPLOYMENT_URL 	:= https://serverless-api-example-docling.apps.<CLUSTER_URL>
+
+# Container engine — override to `docker` via ../.env or the command
+# line (`make build PODMAN=docker`) if you don't use Podman.
+PODMAN ?= podman
 
 HAS_UV := $(shell command -v uv >/dev/null 2>&1; if [ $$? -eq 0 ]; then echo "true"; else echo "false"; fi)
 ifeq ($(HAS_UV), true)
@@ -45,10 +55,10 @@ lint:
 	PYTHONPATH=$(PYTHONPATH) ruff check src/ tests/
 
 build:
-	podman build -f Containerfile -t $(FULL_IMAGE) .
+	$(PODMAN) build -f Containerfile -t $(FULL_IMAGE) .
 
 push:
-	podman push $(FULL_IMAGE)
+	$(PODMAN) push $(FULL_IMAGE)
 
 clean:
 	find . -type d -name __pycache__ -exec rm -rf {} + 2>/dev/null || true

@@ -297,10 +297,10 @@ build-docling-serve: | $(TARGET_DIR)/docling-serve
 		echo "[docling-serve] skipped — 'helm' not found"; \
 	fi
 	if command -v $(PODMAN) >/dev/null 2>&1; then \
-		echo "[docling-serve] building custom image (requires 'podman login registry.redhat.io')"; \
+		echo "[docling-serve] building custom image (requires '$(PODMAN) login registry.redhat.io')"; \
 		$(PODMAN) build -f docling-serve/Containerfile -t "$(REGISTRY)/docling-serve:$(IMAGE_TAG)" docling-serve; \
 	else \
-		echo "[docling-serve] skipped image build — 'podman' not found"; \
+		echo "[docling-serve] skipped image build — '$(PODMAN)' not found"; \
 	fi
 
 test-docling-serve:
@@ -393,7 +393,7 @@ build-serverless-api-example: | $(VENV_PYTHON)
 		echo "[serverless-api-example] building container image"; \
 		$(PODMAN) build -f serverless-api-example/Containerfile -t "$(REGISTRY)/serverless-api-example:$(IMAGE_TAG)" serverless-api-example; \
 	else \
-		echo "[serverless-api-example] skipped image build — 'podman' not found"; \
+		echo "[serverless-api-example] skipped image build — '$(PODMAN)' not found"; \
 	fi
 
 test-serverless-api-example: test-serverless-api-example-health test-serverless-api-example-convert-md test-serverless-api-example-convert-json test-serverless-api-example-integration
@@ -441,7 +441,7 @@ build-event-driven-example: | $(VENV_PYTHON)
 		echo "[event-driven-example] building container image"; \
 		$(PODMAN) build -f event-driven-example/Containerfile -t "$(REGISTRY)/docling-event-driven-example:$(IMAGE_TAG)" event-driven-example; \
 	else \
-		echo "[event-driven-example] skipped image build — 'podman' not found"; \
+		echo "[event-driven-example] skipped image build — '$(PODMAN)' not found"; \
 	fi
 
 test-event-driven-example: test-event-driven-example-ingest test-event-driven-example-invalid-payload
@@ -509,7 +509,7 @@ build-mcp-example: | $(VENV_PYTHON)
 		echo "[mcp-example] building container image"; \
 		$(PODMAN) build -f mcp-example/Containerfile -t "$(REGISTRY)/docling-mcp-example:$(IMAGE_TAG)" mcp-example; \
 	else \
-		echo "[mcp-example] skipped image build — 'podman' not found"; \
+		echo "[mcp-example] skipped image build — '$(PODMAN)' not found"; \
 	fi
 
 test-mcp-example: build-mcp-example | $(TARGET_DIR)/mcp-example
