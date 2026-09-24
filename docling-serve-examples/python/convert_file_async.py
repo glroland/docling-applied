@@ -22,8 +22,13 @@ def convert(input_path: Path, base_url: str, output_dir: Path) -> None:
         submit_resp = requests.post(
             f"{base_url}/v1/convert/file/async",
             files={"files": (input_path.name, f)},
+            # to_formats is a list field (docling's ConvertDocumentsOptions);
+            # docling-serve's multipart form decoder only special-cases
+            # dict/pydantic fields for JSON parsing, so a plain list field
+            # needs one repeated form entry per value, not a comma-joined
+            # string — requests does that for a list value in `data`.
             data={
-                "to_formats": "md,json",
+                "to_formats": ["md", "json"],
                 "do_ocr": "true",
                 "image_export_mode": "placeholder",
                 "table_mode": "fast",
